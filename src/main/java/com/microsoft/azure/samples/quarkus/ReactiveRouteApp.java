@@ -402,14 +402,49 @@ public class ReactiveRouteApp {
         return jsonb.toJson(cosmosContainer);
     }
 
-    /*
+    /**
+     * Create One Person Item
+     *
+     * curl -X POST -H 'Content-Type:application/json' http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/addItem -d '{"firstName": "a", "lastName": "b","age": 39}'
+     *
+     * @param person Person data convert from JSON of HTTP Body
+     * @param databaseName  Database Name
+     * @param containerName Container Name
+     * @return Person data which succeeded
+     */
+    @Route(path = "/react-route/database/:database/container/:container/item/addItem", methods = HttpMethod.POST, produces = "application/json")
+    public Uni<Person> createItemCosmosDB(@Body Person person, @Param("database") String databaseName,
+            @Param("container") String containerName) {
+        Long counter = asyncClient.readAllDatabases().filter(prop -> prop.getId().equals(databaseName)).count().block();
+        if (counter == null || counter < 1) {
+            return Uni.createFrom().nullItem();
+        }
+        CosmosAsyncDatabase asyncDatabase = asyncClient.getDatabase(databaseName);
+        CosmosAsyncContainer asyncContainer = asyncDatabase.getContainer(containerName);
+        if (asyncContainer == null) {
+            return Uni.createFrom().nullItem();
+        }
+
+        person.setId(UUID.randomUUID().toString());
+
+        Mono<Person> successPerson = asyncContainer.createItem(person)
+                .doOnSuccess(cosmosItemResponse -> {
+                    LOGGER.info(cosmosItemResponse.getDiagnostics());
+                    Person returnedPerson = cosmosItemResponse.getItem();
+                    LOGGER.info("SUCCEEDED to Create Item: " + returnedPerson);
+                }).doOnError(LOGGER::error)
+                .map(cosmosItemResponse -> cosmosItemResponse.getItem());
+        return Uni.createFrom().converter(UniReactorConverters.fromMono(), successPerson);
+    }
+
+    /**
      * Create Dummy Item into Container in CosmosDB <p> curl -X POST
      * "http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/addDummyItems"
      * \ -H "accept: application/json" \ -H "Content-Type: application/json"
      */
-
+/*
     @Route(path = "/react-route/database/:database/container/:container/item/addDummyItems", methods = HttpMethod.POST, produces = "application/json")
-    public Uni<List<Person>> createItemCosmosDB(@Param("database") String databaseName,
+    public Uni<List<Person>> createDummyItemCosmosDB(@Param("database") String databaseName,
             @Param("container") String containerName) {
         List<Person> persons = createDummyPersons();
 
@@ -422,7 +457,7 @@ public class ReactiveRouteApp {
                     return response.getItem();
                 }).collectList();
         return Uni.createFrom().converter(UniReactorConverters.fromMono(), listMono);
-    }
+    }*/
 
     /*
      * This method create Dummy Data.
