@@ -42,8 +42,8 @@ curl -X POST -H 'Content-Type:application/json' \
 
 ```bash
 curl -X DELETE -H 'Content-Type:application/json' \
- localhost:8080/react-route//database/delete-database \ -d
- '{"dbName":"PERSON_DB"}'
+ localhost:8080/react-route//database/delete-database \
+ '-d {"dbName":"PERSON_DB"}'
 ```
 
 #### List DB
@@ -56,8 +56,8 @@ curl -X GET http://localhost:8080/react-route/database
 
 ```bash
 curl -X POST -H 'Content-Type:application/json' \
-  localhost:8080/react-route/database/PERSON_DB/container/create-container \ 
-  -d '{"dbName":"PERSON_DB","containerName": "personmanage", "partitionName":"/lastName","requestUnit": 1000}'
+  http://localhost:8080/react-route/database/PERSON_DB/container/create-container \
+  -d '{"containerName": "personmanage", "partitionName":"/lastName","requestUnit": 1000}'
 ```
 
 #### Delete Container
@@ -65,7 +65,7 @@ curl -X POST -H 'Content-Type:application/json' \
 ```bash
 curl -X DELETE -H 'Content-Type:application/json'
  localhost:8080/react-route/database/PERSON_DB/container/delete-container -d
- '{"dbName":"PERSON_DB","containerName": "personmanage"}'
+ '{"containerName": "personmanage"}'
 ```
 
 #### List Containers
