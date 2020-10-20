@@ -27,3 +27,90 @@ In this project, I created a sample Cosmos DB Application with Asynchronous and 
 ## Interface
 
 ![](./images/swagger-ui.png)
+
+### Executions Samples
+
+#### Create DB
+
+```bash
+curl -X POST -H 'Content-Type:application/json' \
+ localhost:8080/react-route/database/create-database \
+ -d '{"dbName":"PERSON_DB"}'
+```
+
+#### Delete DB
+
+```bash
+curl -X DELETE -H 'Content-Type:application/json' \
+ localhost:8080/react-route//database/delete-database \ -d
+ '{"dbName":"PERSON_DB"}'
+```
+
+#### List DB
+
+```bash
+curl -X GET http://localhost:8080/react-route/database
+```
+
+#### Create Container
+
+```bash
+curl -X POST -H 'Content-Type:application/json' \
+  localhost:8080/react-route/database/PERSON_DB/container/create-container \ 
+  -d '{"dbName":"PERSON_DB","containerName": "personmanage", "partitionName":"/lastName","requestUnit": 1000}'
+```
+
+#### Delete Container
+
+```bash
+curl -X DELETE -H 'Content-Type:application/json'
+ localhost:8080/react-route/database/PERSON_DB/container/delete-container -d
+ '{"dbName":"PERSON_DB","containerName": "personmanage"}'
+```
+
+#### List Containers
+
+```bash
+curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container
+```
+
+#### Query Sample
+
+
+```bash
+curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item
+```
+
+```bash
+curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/offset/3
+```
+
+```bash
+curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/preferred
+```
+
+```bash
+curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/$ID
+```
+
+#### Create Item
+
+```bash
+ curl -X POST "http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/addDummyItems"\ 
+   -H "accept: application/json" \ 
+   -H "Content-Type: application/json"
+```
+
+
+
+
+## Notify to Twitter via Azure Logic App from Cosmos DB Change Feed
+
+If Cosmos DB Change Feed receive the chage event, I invoked Azure Logic App.
+And in the Azure Logic App, I send the changed document to Twitter.
+
+
+![](./images/Azure-Logic-App-1.png)
+![](./images/Azure-Logic-App-2.png)
+![](./images/Azure-Logic-App-3.png)
+![](./images/twitte-notify.png)
