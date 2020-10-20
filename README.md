@@ -96,8 +96,14 @@ curl -X GET http://localhost:8080/react-route/database/PERSON_DB/container/perso
 #### Create Item
 
 ```bash
+curl -X POST -H 'Content-Type:application/json' \
+ http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/addItem \
+ -d '{"firstName": "a", "lastName": "b","age": 39}'
+```
+
+```bash
  curl -X POST "http://localhost:8080/react-route/database/PERSON_DB/container/personmanage/item/addDummyItems"\ 
-   -H "accept: application/json" \ 
+   -H "accept: application/json" \
    -H "Content-Type: application/json"
 ```
 
