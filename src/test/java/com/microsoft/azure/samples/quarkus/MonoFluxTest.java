@@ -47,7 +47,7 @@ public class MonoFluxTest {
 
 Process finished with exit code 0
      */
-    
+
     // Flux インスタンスの生成
     // Flux 複数のデータ・ソース
     @Test
@@ -168,7 +168,7 @@ Process finished with exit code 0
     @Test
     public void backPressureTest() throws Exception {
         Flux<Integer> integerFlux = Flux.range(1, 100);
-//                .take(10); //Publisher 側でのリクエスト制限
+//                .take(10); //Publisher 側で何個とってくるかの指定
 
         // Back Pressure Subscriber
         integerFlux.subscribe(
@@ -431,11 +431,10 @@ Process finished with exit code 0
     @Test
     public void mapTest() throws Exception {
         String[] animals = {"dog", "cat", "bird", "mouse", "fish", "lion"};
-        Flux<String> fromIterable = Flux.fromIterable(Arrays.asList(animals));
+        Flux<String> fluxAnimal = Flux.fromIterable(Arrays.asList(animals));
 
         LOGGER.info("This method is running on thread: " + Thread.currentThread().getName());
-        Flux<String> publisher = fromIterable
-                .map(mapper)
+        Flux<String> publisher = fluxAnimal.map(mapper)
                 .subscribeOn(Schedulers.parallel());
 
         publisher.subscribe(returnAnimal -> {
@@ -472,13 +471,13 @@ Process finished with exit code 0
     @Test
     public void flatMapTest() throws Exception {
         String[] animals = {"dog", "cat", "bird", "mouse", "fish", "lion"};
-        Flux<String> fromIterable = Flux.fromIterable(Arrays.asList(animals));
+        Flux<String> fluxAnimal = Flux.fromIterable(Arrays.asList(animals));
 
         // flatMap は Flux から新しい 複数の　Flux<> を生成(別のスレッドで処理を動作可能)
         // Flux.flatMap は 1:n の変換に有効
 
         LOGGER.info("This method is running on thread: " + Thread.currentThread().getName());
-        Flux<String> publisher = fromIterable.flatMap(animal -> {
+        Flux<String> publisher = fluxAnimal.flatMap(animal -> {
             return Mono.just(animal)
                     .map(mapper)
                     .subscribeOn(Schedulers.parallel());
